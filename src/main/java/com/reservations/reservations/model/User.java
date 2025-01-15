@@ -86,7 +86,7 @@ public class User {
     }
 
     public String getRole() {
-        return langue;
+        return role;
     }
 
     public void setRole(String role) {
