@@ -12,6 +12,7 @@
     <div layout:fragment="content">
         <h1>Nouvelle artiste</h1>
         <form th:action="@{/artists/create}" th:object="${artist}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <div>
                 <label>Firstname:</label>
                 <input type="text" th:field="*{firstname}">
