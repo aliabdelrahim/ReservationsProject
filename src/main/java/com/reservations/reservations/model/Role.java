@@ -16,14 +16,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor(force = true, access = AccessLevel.PUBLIC)
 @Entity
-@Table(name="artists")
-public class Artist {
+@Table(name="roles")
+public class Role {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String firstname;
-    private String lastname;
-
+    private String role;
 }
-
-

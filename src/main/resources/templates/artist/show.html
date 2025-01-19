@@ -22,5 +22,31 @@
         <nav><a th:href="@{/artists}">Retour à l'index</a></nav>
     </div>
 </div>
+<div class="container">
+    <!-- Bloc 1 : Type -->
+    <div>
+        <h1 th:if="${type != null}" th:text="${#strings.capitalize(type.type)}">Acteur</h1>
+        <nav><a th:href="@{/types}">Retour à l'index</a></nav>
+    </div>
+
+    <!-- Bloc 2 : Locality -->
+    <div>
+        <h1 th:if="${locality != null}" th:text="|${locality.postalCode} ${locality.locality}|">1000 Bruxelles</h1>
+
+        <ul th:if="${locality != null && !#lists.isEmpty(locality.locations)}">
+            <li th:each="location : ${locality.locations}" th:text="${location.designation}">Dexia Art center</li>
+        </ul>
+
+        <p th:if="${locality != null && #lists.isEmpty(locality.locations)}">Aucun lieu de spectacle.</p>
+
+        <nav><a th:href="@{/localities}">Retour à l'index</a></nav>
+    </div>
+
+    <!-- Bloc 3 : Role -->
+    <div>
+        <h1 th:if="${role != null}" th:text="${#strings.capitalize(role.role)}">Admin</h1>
+        <nav><a th:href="@{/roles}">Retour à l'index</a></nav>
+    </div>
+</div>
 </body>
 </html>

@@ -12,18 +12,15 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @NoArgsConstructor(force = true, access = AccessLevel.PUBLIC)
 @Entity
-@Table(name="artists")
-public class Artist {
+@Table(name="localities")
+public class Locality {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String firstname;
-    private String lastname;
-
+    private String postalCode;
+    private String locality;
 }
-
 
