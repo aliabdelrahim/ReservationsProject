@@ -9,7 +9,12 @@
     <div layout:fragment="content">
         <h1 th:text="${artist.firstname} +' '+ ${artist.lastname}">Bob Sull</h1>
 
-            <div class="actions">
+        <h2>Liste des types</h2>
+        <ul th:unless="${#lists.isEmpty(artist.types)}">
+            <li th:each="type : ${artist.types}" th:text="${type.type}">Type</li>
+        </ul>
+
+        <div class="actions">
             <a th:href="@{/artists/{id}/edit(id=${artist.id})}">Edit</a>
             <form th:id="|deleteForm-${artist.id}|"
                   th:action="@{/artists/{id}(id=${artist.id})}" th:method="delete">
