@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.github.slugify.Slugify;
 import jakarta.persistence.*;
 
@@ -24,9 +23,6 @@ public class Show {
     @Column(name="poster_url")
     private String posterUrl;
 
-    /**
-     * Lieu de création du spectacle
-     */
     @ManyToOne
     @JoinColumn(name="location_id", nullable=true)
     private Location location;
@@ -34,21 +30,22 @@ public class Show {
     private boolean bookable;
     private double price;
 
-    /**
-     * Date de création du spectacle
-     */
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
-    /**
-     * Date de modification du spectacle
-     */
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
     @OneToMany(targetEntity=Representation.class, mappedBy="show")
     private List<Representation> representations = new ArrayList<>();
 
+    // Ajout de la relation ManyToMany
+    @ManyToMany
+    @JoinTable(
+            name = "artist_type_show",
+            joinColumns = @JoinColumn(name = "show_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_type_id"))
+    private List<ArtistType> artistTypes = new ArrayList<>();
 
     public Show() { }
 
@@ -67,106 +64,87 @@ public class Show {
         this.updatedAt = null;
     }
 
+    // Getters et Setters
+    public Long getId() { return id; }
 
-    public Long getId() {
-        return id;
-    }
+    public String getSlug() { return slug; }
 
-    public String getSlug() {
-        return slug;
-    }
-
-    private void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-    public String getTitle() {
-        return title;
-    }
+    public String getTitle() { return title; }
 
     public void setTitle(String title) {
         this.title = title;
-
         Slugify slg = new Slugify();
-
-        this.setSlug(slg.slugify(title));
+        this.slug = slg.slugify(title);
     }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setDescription(String description) { this.description = description; }
 
-    public String getPosterUrl() {
-        return posterUrl;
-    }
+    public String getPosterUrl() { return posterUrl; }
 
-    public void setPosterUrl(String posterUrl) {
-        this.posterUrl = posterUrl;
-    }
+    public void setPosterUrl(String posterUrl) { this.posterUrl = posterUrl; }
 
-    public Location getLocation() {
-        return location;
-    }
+    public Location getLocation() { return location; }
 
     public void setLocation(Location location) {
-        this.location.removeShow(this);	//déménager de l’ancien lieu
+        if (this.location != null) {
+            this.location.removeShow(this);
+        }
         this.location = location;
-        this.location.addShow(this);		//emménager dans le nouveau lieu
+        this.location.addShow(this);
     }
 
-    public boolean isBookable() {
-        return bookable;
-    }
+    public boolean isBookable() { return bookable; }
 
-    public void setBookable(boolean bookable) {
-        this.bookable = bookable;
-    }
+    public void setBookable(boolean bookable) { this.bookable = bookable; }
 
-    public double getPrice() {
-        return price;
-    }
+    public double getPrice() { return price; }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
+    public void setPrice(double price) { this.price = price; }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
-    public List<Representation> getRepresentations() {
-        return representations;
-    }
+    public List<Representation> getRepresentations() { return representations; }
 
     public Show addRepresentation(Representation representation) {
-        if(!this.representations.contains(representation)) {
+        if (!this.representations.contains(representation)) {
             this.representations.add(representation);
             representation.setShow(this);
         }
-
         return this;
     }
 
     public Show removeRepresentation(Representation representation) {
-        if(this.representations.contains(representation)) {
+        if (this.representations.contains(representation)) {
             this.representations.remove(representation);
-            if(representation.getLocation().equals(this)) {
-                representation.setLocation(null);
+            if (representation.getShow().equals(this)) {
+                representation.setShow(null);
             }
         }
+        return this;
+    }
 
+    // Gestion de la relation ManyToMany avec ArtistType
+    public List<ArtistType> getArtistTypes() { return artistTypes; }
+
+    public Show addArtistType(ArtistType artistType) {
+        if (!this.artistTypes.contains(artistType)) {
+            this.artistTypes.add(artistType);
+            artistType.addShow(this);
+        }
+        return this;
+    }
+
+    public Show removeArtistType(ArtistType artistType) {
+        if (this.artistTypes.contains(artistType)) {
+            this.artistTypes.remove(artistType);
+            artistType.getShows().remove(this);
+        }
         return this;
     }
 
@@ -176,8 +154,6 @@ public class Show {
                 + ", description=" + description + ", posterUrl=" + posterUrl + ", location="
                 + location + ", bookable=" + bookable + ", price=" + price
                 + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt
-                + ", representations=" + representations.size() + "]";
+                + ", artistTypes=" + artistTypes.size() + "]";
     }
-
-
 }
