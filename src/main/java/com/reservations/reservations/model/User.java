@@ -1,18 +1,16 @@
 package com.reservations.reservations.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name="users")
 public class User {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     private String login;
     private String password;
@@ -20,16 +18,17 @@ public class User {
     private String lastname;
     private String email;
     private String langue;
-    private String role;
     private LocalDateTime created_at;
+
+    @ManyToMany(mappedBy = "users")
+    private List<Role> roles = new ArrayList<>();
 
     protected User() {}
 
-    public User(String login, String firstname, String lastname, String role) {
+    public User(String login, String firstname, String lastname) {
         this.login = login;
         this.firstname = firstname;
         this.lastname = lastname;
-        this.role = role;
         this.created_at = LocalDateTime.now();
     }
 
@@ -85,20 +84,34 @@ public class User {
         this.langue = langue;
     }
 
-    public String getRole() {
-        return role;
+    public List<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public LocalDateTime getCreatedAt() {
+    public LocalDateTime getCreated_at() {
         return created_at;
+    }
+
+    public User addRole(Role role) {
+        if(!this.roles.contains(role)) {
+            this.roles.add(role);
+            role.addUser(this);
+        }
+
+        return this;
+    }
+
+    public User removeRole(Role role) {
+        if(this.roles.contains(role)) {
+            this.roles.remove(role);
+            role.getUsers().remove(this);
+        }
+
+        return this;
     }
 
     @Override
     public String toString() {
-        return login + "(" + firstname + " " + lastname + " - " + role + ")";
+        return login + "(" + firstname + " " + lastname + ")";
     }
 }

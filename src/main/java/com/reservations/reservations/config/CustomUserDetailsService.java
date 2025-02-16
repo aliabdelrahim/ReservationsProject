@@ -1,5 +1,6 @@
 package com.reservations.reservations.config;
 
+import com.reservations.reservations.model.Role;
 import com.reservations.reservations.model.User;
 import com.reservations.reservations.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,17 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return new org.springframework.security.core.userdetails.User(
                 user.getLogin(), user.getPassword(),
-                getGrantedAuthorities(user.getRole()));
+                getGrantedAuthorities(user.getRoles()));
     }
 
-    private List<GrantedAuthority> getGrantedAuthorities(String role) {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+    private List<GrantedAuthority> getGrantedAuthorities(List<Role> roles) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole()));
+        }
+
         return authorities;
     }
+
 }
