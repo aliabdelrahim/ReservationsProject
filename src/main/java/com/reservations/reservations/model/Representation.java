@@ -1,40 +1,40 @@
 package com.reservations.reservations.model;
 
 import java.time.LocalDateTime;
-
-
-import com.github.slugify.Slugify;
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="representations")
+@Table(name = "representations")
 public class Representation {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="show_id", nullable=false)
+    @JoinColumn(name = "show_id", nullable = false)
     private Show show;
 
-    /**
-     * Date de création de la représentation
-     */
     private LocalDateTime when;
 
-    /**
-     * Lieu de prestation de la représentation
-     */
     @ManyToOne
-    @JoinColumn(name="location_id", nullable=true)
+    @JoinColumn(name = "location_id", nullable = true)
     private Location location;
 
-    public Representation() { }
+    @ManyToMany(mappedBy = "representations")
+    private List<User> users = new ArrayList<>();
+
+    public Representation() {}
 
     public Representation(Show show, LocalDateTime when, Location location) {
         this.show = show;
         this.when = when;
         this.location = location;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Show getShow() {
@@ -61,14 +61,28 @@ public class Representation {
         this.location = location;
     }
 
-    public Long getId() {
-        return id;
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public Representation addUser(User user) {
+        if (!this.users.contains(user)) {
+            this.users.add(user);
+            user.addRepresentation(this);
+        }
+        return this;
+    }
+
+    public Representation removeUser(User user) {
+        if (this.users.contains(user)) {
+            this.users.remove(user);
+            user.getRepresentations().remove(this);
+        }
+        return this;
     }
 
     @Override
     public String toString() {
-        return "Representation [id=" + id + ", show=" + show + ", when=" + when
-                + ", location=" + location + "]";
+        return "Representation [id=" + id + ", show=" + show + ", when=" + when + ", location=" + location + "]";
     }
-
 }
