@@ -8,8 +8,10 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 
 @Configuration
@@ -22,7 +24,6 @@ public class SpringSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/").permitAll();
                     auth.requestMatchers("/admin").hasRole("ADMIN");
                     auth.requestMatchers("/user").hasRole("USER");
                     auth.anyRequest().authenticated();

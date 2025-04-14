@@ -1,9 +1,7 @@
 package com.reservations.reservations.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +22,7 @@ public class Artist {
     private String lastname;
 
     @ManyToMany(mappedBy = "artists")
+    @JsonIgnore
     private List<Type> types = new ArrayList<>();
 
     public List<Type> getTypes() {
