@@ -32,4 +32,12 @@ public class ShowService {
     public void deleteShow(Long id) {
         repository.deleteById(id);
     }
+
+    public List<Show> searchByTagKeyword(String keyword) {
+        return repository.findByTagKeyword(keyword);
+    }
+
+    public List<Show> excludeByTag(String tag) {
+        return repository.findByTagNot(tag);
+    }
 }

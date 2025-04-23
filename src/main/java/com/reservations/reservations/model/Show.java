@@ -47,6 +47,15 @@ public class Show {
             inverseJoinColumns = @JoinColumn(name = "artist_type_id"))
     private List<ArtistType> artistTypes = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "show_tag",
+            joinColumns = @JoinColumn(name = "show_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<Tag> tags = new ArrayList<>();
+
+
     public Show() { }
 
     public Show(String title, String description, String posterUrl, Location location, boolean bookable,
@@ -110,6 +119,16 @@ public class Show {
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
     public List<Representation> getRepresentations() { return representations; }
+
+    // 🔁 Getters et Setters
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
 
     public Show addRepresentation(Representation representation) {
         if (!this.representations.contains(representation)) {
