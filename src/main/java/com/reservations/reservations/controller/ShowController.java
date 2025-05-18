@@ -6,6 +6,7 @@ import com.reservations.reservations.model.ArtistType;
 import com.reservations.reservations.service.ShowService;
 import com.reservations.reservations.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -69,22 +70,26 @@ public class ShowController {
 
     @GetMapping("/shows")
     public String index(Model model,
-                        @RequestParam(name = "search", required = false) String search) {
-        List<Show> shows;
+                        @RequestParam(name = "search", required = false) String search,
+                        @RequestParam(name = "title", required = false) String title,
+                        @RequestParam(name = "sort", defaultValue = "title") String sort,
+                        @RequestParam(name = "dir", defaultValue = "asc") String dir,
+                        @RequestParam(name = "page", defaultValue = "0") int page,
+                        @RequestParam(name = "size", defaultValue = "3") int size) {
 
-        if (search != null && !search.isEmpty()) {
-            shows = service.searchByTagKeyword(search);
-            model.addAttribute("search", search);
-            model.addAttribute("resultsCount", shows.size());
-        } else {
-            shows = service.getAllShows();
-        }
+        Page<Show> shows = service.getFilteredShows(title, search, sort, dir, page, size);
 
         model.addAttribute("shows", shows);
-        model.addAttribute("title", "Liste des spectacles");
+        model.addAttribute("titleFilter", title); //  utilisé dans le formulaire
+        model.addAttribute("search", search);     //  utilisé dans le formulaire
+        model.addAttribute("sort", sort);
+        model.addAttribute("dir", dir);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("title", "Liste des spectacles"); //  utilisé dans <h1>
 
-        return "show/index"; // ton template doit avoir un champ de recherche !
+        return "show/index";
     }
+
 
     @GetMapping("/shows/exclude-tag/{tag}")
     public String excludeByTag(@PathVariable String tag, Model model) {

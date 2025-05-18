@@ -3,6 +3,10 @@ package com.reservations.reservations.service;
 import com.reservations.reservations.model.Show;
 import com.reservations.reservations.repository.ShowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,4 +44,21 @@ public class ShowService {
     public List<Show> excludeByTag(String tag) {
         return repository.findByTagNot(tag);
     }
+
+    public Page<Show> getFilteredShows(String titleKeyword, String tagKeyword, String sortField, String sortDir, int page, int size) {
+        Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+
+        if (titleKeyword != null && !titleKeyword.isEmpty() && tagKeyword != null && !tagKeyword.isEmpty()) {
+            return repository.findByTitleContainingIgnoreCaseAndTagsTagContainingIgnoreCase(titleKeyword, tagKeyword, pageable);
+        } else if (tagKeyword != null && !tagKeyword.isEmpty()) {
+            return repository.findByTagsTagContainingIgnoreCase(tagKeyword, pageable);
+        } else if (titleKeyword != null && !titleKeyword.isEmpty()) {
+            return repository.findByTitleContainingIgnoreCase(titleKeyword, pageable);
+        } else {
+            return repository.findAll(pageable);
+        }
+    }
+
+
 }
