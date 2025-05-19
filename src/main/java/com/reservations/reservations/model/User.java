@@ -31,12 +31,17 @@ public class User {
     )
     private List<Representation> representations = new ArrayList<>();
 
-    protected User() {}
+    public User() {}
 
     public User(String login, String firstname, String lastname) {
         this.login = login;
         this.firstname = firstname;
         this.lastname = lastname;
+        //this.created_at = LocalDateTime.now();
+    }
+
+    @PrePersist
+    protected void onCreate() {
         this.created_at = LocalDateTime.now();
     }
 

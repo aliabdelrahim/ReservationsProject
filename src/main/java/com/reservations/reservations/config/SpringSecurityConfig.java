@@ -24,11 +24,20 @@ public class SpringSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll();
                     auth.requestMatchers("/admin").hasRole("ADMIN");
                     auth.requestMatchers("/user").hasRole("USER");
                     auth.anyRequest().authenticated();
                 })
-                .formLogin(Customizer.withDefaults())
+                .formLogin(form -> form
+                        .loginPage("/login") //  dit à Spring d'utiliser TA page
+                        .defaultSuccessUrl("/", true)
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
+                )
                 .rememberMe(Customizer.withDefaults())
                 .build();
     }
