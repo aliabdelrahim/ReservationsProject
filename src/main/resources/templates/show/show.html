@@ -71,7 +71,7 @@
             <p th:if="${#lists.isEmpty(show.tags)}" class="text-muted">Aucun mot-clé pour ce spectacle.</p>
         </div>
 
-        <!-- 🔐 Formulaire pour ajouter un tag (admin uniquement) -->
+        <!--  Formulaire pour ajouter un tag (admin uniquement) -->
         <div th:if="${#authorization.expression('hasRole(''admin'')')}">
             <form th:action="@{/shows/{id}/add-tag(id=${show.id})}" method="post" class="mt-3 d-flex gap-2">
                 <input type="text" name="tag" placeholder="Ajouter un mot-clé..." class="form-control" required>

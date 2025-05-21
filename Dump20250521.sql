@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `reservations` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `reservations`;
 -- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
 -- Host: localhost    Database: reservations
@@ -86,8 +84,11 @@ CREATE TABLE `artists` (
   `id` int NOT NULL AUTO_INCREMENT,
   `firstname` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `lastname` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `troupe_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_artist_troupe` (`troupe_id`),
+  CONSTRAINT `fk_artist_troupe` FOREIGN KEY (`troupe_id`) REFERENCES `troupes` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,7 +97,7 @@ CREATE TABLE `artists` (
 
 LOCK TABLES `artists` WRITE;
 /*!40000 ALTER TABLE `artists` DISABLE KEYS */;
-INSERT INTO `artists` VALUES (1,'Danielle','Marcelin'),(2,'Philippe','Laurent'),(3,'Marius','Von Mayenburg'),(4,'Olivier','Boudon'),(5,'Anne Marie','Loop'),(6,'Pietro','Varasso'),(7,'Laurent','Caron'),(8,'Élena','Perez'),(9,'Guillaume','Alexandre'),(10,'Claude','Semal'),(11,'Laurence','Warin'),(12,'Pierre','Wayburn'),(13,'Gwendoline','Gauthier');
+INSERT INTO `artists` VALUES (1,'Daniel','Marcelin',3),(2,'Philippe','Laurent',1),(3,'Marius','Von Mayenburg',4),(4,'Olivier','Boudon',2),(5,'Anne Marie','Loop',2),(6,'Pietro','Varasso',NULL),(7,'Laurent','Caron',3),(8,'Élena','Perez',3),(9,'Guillaume','Alexandre',4),(10,'Claude','Semal',4),(11,'Laurence','Warin',5),(12,'Pierre','Wayburn',5),(13,'Gwendoline','Gauthier',5);
 /*!40000 ALTER TABLE `artists` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -129,7 +130,7 @@ CREATE TABLE `flyway_schema_history` (
 
 LOCK TABLES `flyway_schema_history` WRITE;
 /*!40000 ALTER TABLE `flyway_schema_history` DISABLE KEYS */;
-INSERT INTO `flyway_schema_history` VALUES (1,'1.1','create artists table','SQL','V1_1__create_artists_table.sql',-1928428595,'root','2025-04-15 18:58:46',75,1),(2,'1.2','insert artists table','SQL','V1_2__insert_artists_table.sql',-280175186,'root','2025-04-15 18:58:46',11,1),(3,'2.1','create users table','SQL','V2_1__create_users_table.sql',513360628,'root','2025-04-15 18:58:46',106,1),(4,'2.2','insert users table','SQL','V2_2__insert_users_table.sql',-1294094065,'root','2025-04-15 18:58:46',9,1),(5,'3.1','create localities table','SQL','V3_1__create_localities_table.sql',175429460,'root','2025-04-15 18:58:46',121,1),(6,'3.2','insert localities table','SQL','V3_2__insert_localities_table.sql',805785997,'root','2025-04-15 18:58:46',8,1),(7,'4.1','create roles table','SQL','V4_1__create_roles_table.sql',239598783,'root','2025-04-15 18:58:47',59,1),(8,'4.2','insert roles table','SQL','V4_2__insert_roles_table.sql',-1624113663,'root','2025-04-15 18:58:47',7,1),(9,'5.1','create types table','SQL','V5_1__create_types_table.sql',1925872095,'root','2025-04-15 18:58:47',33,1),(10,'5.2','insert types table','SQL','V5_2__insert_types_table.sql',-126045216,'root','2025-04-15 18:58:47',7,1),(11,'6.1','create locations table','SQL','V6_1__create_locations_table.sql',1736301610,'root','2025-04-15 18:58:47',185,1),(12,'6.2','insert locations table','SQL','V6_2__insert_locations_table.sql',1508143262,'root','2025-04-15 18:58:47',6,1),(13,'7.1','create shows table','SQL','V7_1__create_shows_table.sql',-892313632,'root','2025-04-15 18:58:47',237,1),(14,'7.2','insert shows table','SQL','V7_2__insert_shows_table.sql',-2085968838,'root','2025-04-15 18:58:47',6,1),(15,'8.1','create representations table','SQL','V8_1__create_representations_table.sql',-1708055491,'root','2025-04-15 18:58:48',310,1),(16,'8.2','create representations table','SQL','V8_2__create_representations_table.sql',1896858991,'root','2025-04-15 18:58:48',5,1),(17,'9.1','create artist type table','SQL','V9_1__create_artist_type_table.sql',1676507029,'root','2025-04-15 18:58:48',329,1),(18,'9.2','insert artist type table','SQL','V9_2__insert_artist_type_table.sql',-1003207613,'root','2025-04-15 18:58:48',6,1),(19,'10.1','create artist type show table','SQL','V10_1__create_artist_type_show_table.sql',220468303,'root','2025-04-15 18:58:48',177,1),(20,'10.2','insert artist type show table','SQL','V10_2__insert_artist_type_show_table.sql',-31123080,'root','2025-04-15 18:58:48',8,1),(21,'11.2','create user role table','SQL','V11_2__create_user_role_table.sql',-330443967,'root','2025-04-15 18:58:49',290,1),(22,'12.1','insert user role table','SQL','V12_1__insert_user_role_table.sql',425274378,'root','2025-04-15 18:58:49',4,1),(23,'12.2','create reservations table','SQL','V12_2__create_reservations_table.sql',1726137537,'root','2025-04-15 18:58:49',323,1),(24,'13.1','insert reservations table','SQL','V13_1__insert_reservations_table.sql',2074592799,'root','2025-04-15 18:58:49',4,1),(25,'14.1','create tags table','SQL','V14_1__create_tags_table.sql',1909949012,'root','2025-04-15 18:58:49',343,1),(26,'14.2','insert tags table','SQL','V14_2__insert_tags_table.sql',-1268063841,'root','2025-04-15 18:58:49',12,1);
+INSERT INTO `flyway_schema_history` VALUES (1,'1.1','create artists table','SQL','V1_1__create_artists_table.sql',-1928428595,'root','2025-05-21 17:20:07',93,1),(2,'1.2','insert artists table','SQL','V1_2__insert_artists_table.sql',-280175186,'root','2025-05-21 17:20:07',24,1),(3,'2.1','create users table','SQL','V2_1__create_users_table.sql',513360628,'root','2025-05-21 17:20:07',117,1),(4,'2.2','insert users table','SQL','V2_2__insert_users_table.sql',-1294094065,'root','2025-05-21 17:20:07',11,1),(5,'3.1','create localities table','SQL','V3_1__create_localities_table.sql',175429460,'root','2025-05-21 17:20:07',36,1),(6,'3.2','insert localities table','SQL','V3_2__insert_localities_table.sql',805785997,'root','2025-05-21 17:20:07',9,1),(7,'4.1','create roles table','SQL','V4_1__create_roles_table.sql',239598783,'root','2025-05-21 17:20:07',60,1),(8,'4.2','insert roles table','SQL','V4_2__insert_roles_table.sql',-1624113663,'root','2025-05-21 17:20:07',5,1),(9,'5.1','create types table','SQL','V5_1__create_types_table.sql',1925872095,'root','2025-05-21 17:20:07',41,1),(10,'5.2','insert types table','SQL','V5_2__insert_types_table.sql',-126045216,'root','2025-05-21 17:20:08',9,1),(11,'6.1','create locations table','SQL','V6_1__create_locations_table.sql',1736301610,'root','2025-05-21 17:20:08',221,1),(12,'6.2','insert locations table','SQL','V6_2__insert_locations_table.sql',1508143262,'root','2025-05-21 17:20:08',10,1),(13,'7.1','create shows table','SQL','V7_1__create_shows_table.sql',-892313632,'root','2025-05-21 17:20:08',194,1),(14,'7.2','insert shows table','SQL','V7_2__insert_shows_table.sql',-2085968838,'root','2025-05-21 17:20:08',6,1),(15,'8.1','create representations table','SQL','V8_1__create_representations_table.sql',-1708055491,'root','2025-05-21 17:20:09',361,1),(16,'8.2','create representations table','SQL','V8_2__create_representations_table.sql',1896858991,'root','2025-05-21 17:20:09',10,1),(17,'9.1','create artist type table','SQL','V9_1__create_artist_type_table.sql',1676507029,'root','2025-05-21 17:20:09',416,1),(18,'9.2','insert artist type table','SQL','V9_2__insert_artist_type_table.sql',-1003207613,'root','2025-05-21 17:20:09',12,1),(19,'10.1','create artist type show table','SQL','V10_1__create_artist_type_show_table.sql',220468303,'root','2025-05-21 17:20:09',270,1),(20,'10.2','insert artist type show table','SQL','V10_2__insert_artist_type_show_table.sql',-31123080,'root','2025-05-21 17:20:09',9,1),(21,'11.2','create user role table','SQL','V11_2__create_user_role_table.sql',-330443967,'root','2025-05-21 17:20:10',329,1),(22,'12.1','insert user role table','SQL','V12_1__insert_user_role_table.sql',425274378,'root','2025-05-21 17:20:10',5,1),(23,'12.2','create reservations table','SQL','V12_2__create_reservations_table.sql',1726137537,'root','2025-05-21 17:20:10',340,1),(24,'13.1','insert reservations table','SQL','V13_1__insert_reservations_table.sql',2074592799,'root','2025-05-21 17:20:10',4,1),(25,'14.1','create tags table','SQL','V14_1__create_tags_table.sql',1909949012,'root','2025-05-21 17:20:11',386,1),(26,'14.2','insert tags table','SQL','V14_2__insert_tags_table.sql',-1268063841,'root','2025-05-21 17:20:11',13,1),(27,'15.1','create troupes table','SQL','V15_1__create_troupes_table.sql',74876344,'root','2025-05-21 17:20:11',59,1),(28,'15.2','add troupe id to artists','SQL','V15_2__add_troupe_id_to_artists.sql',1533494071,'root','2025-05-21 17:20:11',103,1),(29,'15.3','insert troupes and link artists','SQL','V15_3__insert_troupes_and_link_artists.sql',-619327054,'root','2025-05-21 17:20:11',16,1);
 /*!40000 ALTER TABLE `flyway_schema_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -299,7 +300,7 @@ CREATE TABLE `show_tag` (
 
 LOCK TABLES `show_tag` WRITE;
 /*!40000 ALTER TABLE `show_tag` DISABLE KEYS */;
-INSERT INTO `show_tag` VALUES (1,1),(1,5),(1,7),(1,8),(2,3),(2,6),(2,7),(3,2),(3,4),(4,2),(4,3);
+INSERT INTO `show_tag` VALUES (1,1),(1,5),(1,7),(2,3),(2,6),(2,7),(3,2),(3,4),(4,2),(4,3);
 /*!40000 ALTER TABLE `show_tag` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -350,7 +351,7 @@ CREATE TABLE `tags` (
   `tag` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `tag` (`tag`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -359,8 +360,34 @@ CREATE TABLE `tags` (
 
 LOCK TABLES `tags` WRITE;
 /*!40000 ALTER TABLE `tags` DISABLE KEYS */;
-INSERT INTO `tags` VALUES (6,'anticipation'),(4,'chansons'),(3,'enfants'),(5,'haïti'),(2,'humour'),(8,'new'),(7,'société'),(1,'théâtre');
+INSERT INTO `tags` VALUES (6,'anticipation'),(4,'chansons'),(3,'enfants'),(5,'haïti'),(2,'humour'),(7,'société'),(1,'théâtre');
 /*!40000 ALTER TABLE `tags` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `troupes`
+--
+
+DROP TABLE IF EXISTS `troupes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `troupes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `logo_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `troupes`
+--
+
+LOCK TABLES `troupes` WRITE;
+/*!40000 ALTER TABLE `troupes` DISABLE KEYS */;
+INSERT INTO `troupes` VALUES (1,'Les Acrobates','acrobates.jpg'),(2,'Les Jongleurs','jongleurs.jpg'),(3,'Les Illusionnistes','illusionnistes.jpg'),(4,'La Troupe du Nord','nord.jpg'),(5,'Les Nomades du Rire','nomades.jpg');
+/*!40000 ALTER TABLE `troupes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -455,4 +482,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-15 21:40:51
+-- Dump completed on 2025-05-21 19:45:54

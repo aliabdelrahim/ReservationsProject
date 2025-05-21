@@ -12,6 +12,40 @@
     <div layout:fragment="content">
         <h1 th:text="${artist.firstname} +' '+ ${artist.lastname}" class="section-title">Bob Sull</h1>
 
+        <!-- Troupe de l'artiste -->
+        <div class="my-4">
+            <h2>Troupe</h2>
+            <div th:if="${artist.troupe != null}">
+                <p><strong>Nom :</strong> <span th:text="${artist.troupe.name}">Les Acrobates</span></p>
+                <img th:src="@{'/images/' + ${artist.troupe.logoUrl}}" alt="Logo troupe" style="width: 50px;">
+
+            </div>
+            <div th:if="${artist.troupe == null}">
+                <p><strong>Nom :</strong> Non affilié</p>
+            </div>
+        </div>
+
+        <!-- Formulaire de modification de la troupe (administrateur uniquement) -->
+        <div class="my-4" th:if="${#authorization.expression('hasRole(''admin'')')}">
+            <h3>Modifier l’affiliation à une troupe</h3>
+            <form th:action="@{/artists/{id}/troupe(id=${artist.id})}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <div class="mb-3">
+                    <label for="troupeSelect" class="form-label">Troupe :</label>
+                    <select name="troupeId" id="troupeSelect" class="form-select">
+                        <option th:value="__null__">Non affilié</option>
+                        <option th:each="troupe : ${troupes}"
+                                th:value="${troupe.id}"
+                                th:text="${troupe.name}"
+                                th:selected="${artist.troupe != null and troupe.id == artist.troupe.id}">
+                        </option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Mettre à jour</button>
+            </form>
+        </div>
+
+
         <h2 class="section-title">Liste des types</h2>
         <ul th:unless="${#lists.isEmpty(artist.types)}" class="section-content">
             <li th:each="type : ${artist.types}" th:text="${type.type}">Type</li>

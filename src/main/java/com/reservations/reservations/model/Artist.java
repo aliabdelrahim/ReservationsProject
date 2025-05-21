@@ -25,6 +25,10 @@ public class Artist {
     @JsonIgnore
     private List<Type> types = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "troupe_id")
+    private Troupe troupe;
+
     public List<Type> getTypes() {
         return types;
     }
