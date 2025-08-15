@@ -54,4 +54,20 @@ public class SpringSecurityConfig {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    SecurityFilterChain chain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/","/register", "/login", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/payments/webhook").permitAll()         // webhook public
+                        .requestMatchers("/payments/checkout").authenticated()    // paiement → login requis
+                        .anyRequest().authenticated()
+                )
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/payments/webhook")) // pas de CSRF pour le webhook
+                .formLogin(login -> login.loginPage("/login").defaultSuccessUrl("/profile", true))
+                .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/"));
+        return http.build();
+    }
+
 }
