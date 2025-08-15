@@ -4,26 +4,38 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "representations")
 public class Representation {
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
+    @Getter
     @ManyToOne
     @JoinColumn(name = "show_id", nullable = false)
     private Show show;
 
+    @Getter
     private LocalDateTime when;
 
+    @Setter
+    @Getter
     @ManyToOne
     @JoinColumn(name = "location_id", nullable = true)
     private Location location;
 
+    @Getter
     @ManyToMany(mappedBy = "representations")
     private List<User> users = new ArrayList<>();
+
+    @Column(nullable=false)
+    private Integer capacity;
 
     public Representation() {}
 
@@ -31,38 +43,6 @@ public class Representation {
         this.show = show;
         this.when = when;
         this.location = location;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Show getShow() {
-        return show;
-    }
-
-    public void setShow(Show show) {
-        this.show = show;
-    }
-
-    public LocalDateTime getWhen() {
-        return when;
-    }
-
-    public void setWhen(LocalDateTime when) {
-        this.when = when;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public List<User> getUsers() {
-        return users;
     }
 
     public Representation addUser(User user) {
@@ -84,5 +64,9 @@ public class Representation {
     @Override
     public String toString() {
         return "Representation [id=" + id + ", show=" + show + ", when=" + when + ", location=" + location + "]";
+    }
+
+    public int getCapacity() {
+        return (capacity != null) ? capacity : 0;  // valeur par défaut si non initialisée
     }
 }

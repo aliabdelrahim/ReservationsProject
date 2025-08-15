@@ -8,10 +8,9 @@
 </head>
 <body>
 <div layout:fragment="content">
+  <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
   <div class="container mt-5">
     <h1>Modifier mon profil</h1>
-
-    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
 
     <form th:action="@{/profile}" th:object="${user}" method="post" class="row g-3">
       <div class="col-md-6">
@@ -39,6 +38,58 @@
       </div>
     </form>
   </div>
+
+  <hr class="my-5">
+
+  <h2 class="mb-3">Mes réservations</h2>
+
+  <div th:if="${#lists.isEmpty(reservations)}" class="alert alert-info">
+    Aucune réservation pour l’instant.
+  </div>
+
+  <table th:if="${!#lists.isEmpty(reservations)}" class="table table-striped align-middle">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Spectacle</th>
+      <th>Date</th>
+      <th>Lieu</th>
+      <th>Places</th>
+      <th>Statut</th>
+      <th class="text-end">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="r : ${reservations}">
+      <td th:text="${r.id}"></td>
+      <td th:text="${r.representation.show.title}"></td>
+      <td th:text="${#temporals.format(r.representation.when, 'dd/MM/yyyy HH:mm')}"></td>
+      <td th:text="${r.representation.location != null ? r.representation.location.designation : 'À déterminer'}"></td>
+      <td th:text="${r.places}"></td>
+      <td>
+        <span th:text="${r.status}"></span>
+      </td>
+      <td class="text-end">
+        <!-- Bouton Annuler si pas déjà annulée -->
+        <form th:if="${r.status.name() != 'CANCELED'}"
+              th:action="@{/profile/reservations/{id}/cancel(id=${r.id})}"
+              method="post" class="d-inline">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+          <button type="submit" class="btn btn-sm btn-outline-danger"
+                  onclick="return confirm('Annuler cette réservation ?');">
+            Annuler
+          </button>
+        </form>
+
+        <!-- (Optionnel) Lien/btn Payer si status PENDING -->
+        <a th:if="${r.status.name() == 'PENDING'}"
+           th:href="@{'/payments/checkout?reservationId=' + ${r.id}}"
+           class="btn btn-sm btn-primary ms-2">Payer</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
 </div>
 </body>
 </html>

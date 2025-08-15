@@ -1,6 +1,7 @@
 package com.reservations.reservations.controller;
 
 import com.reservations.reservations.model.User;
+import com.reservations.reservations.service.ReservationService;
 import com.reservations.reservations.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,11 +20,16 @@ public class ProfileController {
 
     @Autowired
     private UserService userService;
+    @Autowired private ReservationService reservationService;
 
     @GetMapping
     public String editProfile(Model model, Principal principal) {
         User user = userService.findByLogin(principal.getName());
         model.addAttribute("user", user);
+
+        // Ajout des réservations de l'utilisateur courant
+        model.addAttribute("reservations", reservationService.myReservations(principal.getName()));
+
         return "profile/edit";
     }
 

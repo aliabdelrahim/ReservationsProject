@@ -33,6 +33,23 @@
           à déterminer
         </em>
       </p>
+
+      <p>
+        Places restantes :
+        <strong th:text="${remaining} ?: 0">0</strong>
+      </p>
+
+      <form th:action="@{/representations/{id}/reserve(id=${representation.id})}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <input type="number" name="qty" min="1" th:attr="max=${remaining}" required>
+        <button type="submit" class="btn btn-primary">Réserver</button>
+      </form>
+
+      <p th:if="${!#authorization.expression('isAuthenticated()')}">
+        <a th:href="@{/login}">Connecte-toi</a> pour réserver.
+      </p>
+
+
     </article>
 
     <nav><a th:href="@{/representations}">Retour à l'index</a></nav>
