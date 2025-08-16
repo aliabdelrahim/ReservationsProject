@@ -6,6 +6,7 @@ import java.util.List;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.openxmlformats.schemas.presentationml.x2006.main.CTSlide;
 
 @Entity
 @Table(name = "representations")
@@ -70,4 +71,6 @@ public class Representation {
     public int getCapacity() {
         return (capacity != null) ? capacity : 0;  // valeur par défaut si non initialisée
     }
+
+
 }

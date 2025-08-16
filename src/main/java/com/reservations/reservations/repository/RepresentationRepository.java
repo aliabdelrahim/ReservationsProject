@@ -18,8 +18,9 @@ public interface RepresentationRepository extends CrudRepository<Representation,
     List<Representation> findByLocation(Location location);
     List<Representation> findByWhen(LocalDateTime when);
 
-    // 👇 Méthode qui "verrouille" la ligne pendant la transaction
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT r FROM Representation r WHERE r.id = :id")
     Optional<Representation> lockById(@Param("id") Long id);
+
+    List<Representation> findTop20ByOrderByWhenDesc();
 }
