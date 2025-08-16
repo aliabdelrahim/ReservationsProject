@@ -1,18 +1,16 @@
 package com.reservations.reservations.api.controller;
 
-import java.util.List;
-
 import com.reservations.reservations.model.Artist;
 import com.reservations.reservations.repository.ArtistRepository;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -24,47 +22,81 @@ public class ArtistApiController {
         this.repository = repository;
     }
 
-    // GET all artists
+    // ----------------------------
+    // LECTURE (public)
+    // ----------------------------
+
+    // GET /api/artists : liste (DTO sans associations)
     @GetMapping("/artists")
-    public List<Artist> all() {
-        var lista = (List<Artist>) repository.findAll();
-        System.out.println(lista); // Vérifie ce qui est récupéré
-        return lista;
+    public List<ArtistDto> all() {
+        Iterable<Artist> it = repository.findAll();
+        List<ArtistDto> out = new ArrayList<>();
+        for (Artist a : it) {
+            out.add(ArtistDto.from(a));
+        }
+        return out;
     }
 
-    // GET a single artist
+    // GET /api/artists/{id} : détail
     @GetMapping("/artists/{id}")
-    public Artist one(@PathVariable Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Artist not found"));
+    public ArtistDto one(@PathVariable Long id) {
+        Artist a = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist not found"));
+        return ArtistDto.from(a);
     }
 
-    // POST a new artist
+    // ----------------------------
+    // ÉCRITURE (ADMIN)
+    // ----------------------------
+
+    // POST /api/admin/artists : créer
     @PostMapping("/admin/artists")
-    public Artist newArtist(@RequestBody Artist newArtist) {
-        return repository.save(newArtist);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ArtistDto create(@RequestBody @Valid UpsertArtistDto dto) {
+        Artist a = new Artist();
+        a.setFirstname(dto.firstname());
+        a.setLastname(dto.lastname());
+        Artist saved = repository.save(a);
+        return ArtistDto.from(saved);
     }
 
-    // PUT (update) an artist
+    // PUT /api/admin/artists/{id} : mettre à jour (404 si introuvable)
     @PutMapping("/admin/artists/{id}")
-    public Artist replaceArtist(@RequestBody Artist newArtist,
-                                @PathVariable Long id) {
-        return repository.findById(id)
-                .map(artist -> {
-                    artist.setFirstname(newArtist.getFirstname());
-                    artist.setLastname(newArtist.getLastname());
-                    return repository.save(artist);
-                })
-                .orElseGet(() -> {
-                    newArtist.setId(id);
-                    return repository.save(newArtist);
-                });
+    @PreAuthorize("hasRole('ADMIN')")
+    public ArtistDto update(@RequestBody @Valid UpsertArtistDto dto, @PathVariable Long id) {
+        Artist a = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist not found"));
+        a.setFirstname(dto.firstname());
+        a.setLastname(dto.lastname());
+        Artist saved = repository.save(a);
+        return ArtistDto.from(saved);
     }
 
-    // DELETE an artist
+    // DELETE /api/admin/artists/{id} : supprimer
     @DeleteMapping("/admin/artists/{id}")
-    public void deleteArtist(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
+    public void delete(@PathVariable Long id) {
+        if (!repository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist not found");
+        }
         repository.deleteById(id);
     }
-}
 
+    // ============================
+    // DTOs (pour éviter la récursion JSON)
+    // ============================
+
+    // Réponse JSON
+    public static record ArtistDto(Long id, String firstname, String lastname) {
+        public static ArtistDto from(Artist a) {
+            return new ArtistDto(a.getId(), a.getFirstname(), a.getLastname());
+        }
+    }
+
+    // Payload création/màj (pas de slug ici)
+    public static record UpsertArtistDto(
+            @NotBlank String firstname,
+            @NotBlank String lastname
+    ) {}
+}
