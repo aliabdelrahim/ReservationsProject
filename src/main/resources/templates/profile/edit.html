@@ -59,6 +59,13 @@
       <th class="text-end">Actions</th>
     </tr>
     </thead>
+    <div class="d-flex justify-content-end mb-3" th:if="${!#lists.isEmpty(reservations)}">
+      <div class="btn-group">
+        <a class="btn btn-outline-secondary btn-sm" th:href="@{/profile/exports/reservations.csv}">CSV</a>
+        <a class="btn btn-outline-secondary btn-sm" th:href="@{/profile/exports/reservations.xlsx}">XLSX</a>
+        <a class="btn btn-outline-secondary btn-sm" th:href="@{/profile/exports/reservations.pdf}">PDF</a>
+      </div>
+    </div>
     <tbody>
     <tr th:each="r : ${reservations}">
       <td th:text="${r.id}"></td>
