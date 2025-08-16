@@ -22,6 +22,7 @@ public class Representation {
     private Show show;
 
     @Getter
+    @Column(name = "`when`", nullable = false)
     private LocalDateTime when;
 
     @Setter

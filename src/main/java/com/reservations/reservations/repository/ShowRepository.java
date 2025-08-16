@@ -9,12 +9,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ShowRepository extends JpaRepository<Show, Long> {
 
     Show findBySlug(String slug);
 
     Show findByTitle(String title);
+
+    Optional<Show> findByTitleIgnoreCase(String title);
 
     List<Show> findByLocation(Location location);
 

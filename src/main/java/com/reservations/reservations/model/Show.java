@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 @Table(name="shows")
 public class Show {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique=true)
@@ -30,7 +30,7 @@ public class Show {
     private boolean bookable;
     private double price;
 
-    @Column(name="created_at")
+    @Column(name="created_at", nullable=false, updatable=false)
     private LocalDateTime createdAt;
 
     @Column(name="updated_at")
@@ -71,6 +71,24 @@ public class Show {
         this.price = price;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = null;
+    }
+
+    // ---- Callbacks pour alimenter created_at / updated_at + slug ----
+    @PrePersist
+    void prePersist() {
+        if (createdAt == null) createdAt = LocalDateTime.now();
+        if (slug == null || slug.isBlank()) {
+            String base = title != null ? title : "show";
+            String s = base.trim().toLowerCase().replaceAll("[^a-z0-9\\s-]", "")
+                    .replaceAll("\\s+", "-");
+            slug = s.length() > 60 ? s.substring(0, 60) : s;
+            if (slug.isBlank()) slug = "show";
+        }
+    }
+
+    @PreUpdate
+    void preUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 
     // Getters et Setters

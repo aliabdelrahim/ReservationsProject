@@ -22,6 +22,12 @@
                 <li th:classappend="${module == 'representations' ? 'active' : ''}">
                     <a href="#" th:href="@{/representations}">Representations</a>
                 </li>
+                <li th:if="${#authorization.expression('hasRole(''admin'')')}" th:classappend="${module == 'admin-import' ? 'active' : ''}">
+                    <a href="#"
+                       th:href="@{/admin/import}">
+                        Import de représentations
+                    </a>
+                </li>
                 <li><a class="nav-link" th:href="@{/profile}">Mon profil</a></li>
                 <li class="nav-item">
                     <form th:action="@{/logout}" method="post" class="d-inline">
