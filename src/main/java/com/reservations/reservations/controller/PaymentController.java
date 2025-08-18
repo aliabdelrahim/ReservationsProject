@@ -120,7 +120,7 @@ public class PaymentController {
     @PostMapping("/webhook")
     @ResponseBody
     public String webhook(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader) {
-        // ⚠️ Pour un POC: on lit simplement le JSON; en prod: vérifier la signature avec l’endpoint secret
+        //  Pour un POC: on lit simplement le JSON; en prod: vérifier la signature avec l’endpoint secret
         try {
             com.google.gson.JsonObject json = com.google.gson.JsonParser.parseString(payload).getAsJsonObject();
             String type = json.get("type").getAsString();
