@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.reservations</groupId>
 	<artifactId>reservations</artifactId>
-	<version>1.0.0</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>reservationApp</name>
 	<description>Application de gestion de réservations de spectacles pour la société de production.</description>
 	<url/>
