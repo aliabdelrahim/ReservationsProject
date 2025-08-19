@@ -51,7 +51,7 @@
             <li th:each="type : ${artist.types}" th:text="${type.type}">Type</li>
         </ul>
 
-        <div class="actions">
+        <div class="actions" th:if="${#authorization.expression('hasRole(''admin'')')}">
             <a th:href="@{/artists/{id}/edit(id=${artist.id})}" class="btn-add">Edit</a>
             <form th:id="|deleteForm-${artist.id}|"
                   th:action="@{/artists/{id}(id=${artist.id})}" th:method="delete" style="display:inline;">
